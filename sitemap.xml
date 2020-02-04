@@ -2,6 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://issackwan.github.io/uncategorized/Centos-install-mysql/</loc>
+    
+    <lastmod>2020-02-04T11:48:11.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://issackwan.github.io/Java/Java-Collection-section31/</loc>
+    
+    <lastmod>2020-01-13T08:24:22.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://issackwan.github.io/Java/Java-Collection-section1/</loc>
+    
+    <lastmod>2020-01-11T15:18:20.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://issackwan.github.io/Nginx/Nginx-vhost/</loc>
     
     <lastmod>2020-01-08T07:17:09.000Z</lastmod>

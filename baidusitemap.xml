@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://issackwan.github.io/uncategorized/Centos-install-mysql/</loc>
+    <lastmod>2020-02-04</lastmod>
+  </url>  <url>
+    <loc>http://issackwan.github.io/Java/Java-Collection-section31/</loc>
+    <lastmod>2020-01-13</lastmod>
+  </url>  <url>
+    <loc>http://issackwan.github.io/Java/Java-Collection-section1/</loc>
+    <lastmod>2020-01-11</lastmod>
+  </url>  <url>
     <loc>http://issackwan.github.io/Nginx/Nginx-vhost/</loc>
     <lastmod>2020-01-08</lastmod>
   </url>  <url>
