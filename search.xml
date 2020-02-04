@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Centos7通过yum方式安装mysql</title>
+    <url>/uncategorized/Centos-install-mysql/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;本篇属于操作的基本篇，仅仅是作为Centos7系统安装Mysql数据库的一个笔记，难度较低。</p>
+<h1 id="下载："><a href="#下载：" class="headerlink" title="下载："></a>下载：</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;由于使用yum方式进行安装，故此无需直接下载安装包，只需要增加yum安装源即可。</p>
+<h2 id="增加Mysql-Yum安装源"><a href="#增加Mysql-Yum安装源" class="headerlink" title="增加Mysql Yum安装源"></a>增加Mysql Yum安装源</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;到mysql官网<a href="https://dev.mysql.com/downloads/repo/yum/" target="_blank" rel="noopener">(https://dev.mysql.com/downloads/repo/yum/)</a>选择对应系统平台的rpm包，直接下载，或者通过wget命令下载到本机。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">wget https://repo.mysql.com//mysql80-community-release-el7-3.noarch.rpm</span><br></pre></td></tr></table></figure>
+
+<p>增加软件源</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo rpm -Uvh package-name.rpm</span><br></pre></td></tr></table></figure>
+<p>比如本文使用的包：mysql80-community-release-el7-3.noarch.rpm</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo rpm -Uvh mysql80-community-release-el7-3.noarch.rpm</span><br></pre></td></tr></table></figure>
+
+<h2 id="选择安装版本"><a href="#选择安装版本" class="headerlink" title="选择安装版本"></a>选择安装版本</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;添加的软件源，默认是开启最新的版本，比如最新版是8.0则，默认安装的是8.0版本。可以通过以下命令检查目前启动是那些版本。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yum repolist all | grep mysql</span><br></pre></td></tr></table></figure>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;如果发现的版本非需要安装的版本，比如启动的是8.0版本，但是却想安装7.0的版本，可以通过以下命令进行切换：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo yum-config-manager --<span class="built_in">disable</span> mysql57-community</span><br><span class="line">sudo yum-config-manager --<span class="built_in">enable</span> mysql80-community</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装mysql"><a href="#安装mysql" class="headerlink" title="安装mysql"></a>安装mysql</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;通过命令行指令，直接安装</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo yum install mysql-community-server</span><br></pre></td></tr></table></figure>
+
+<h2 id="启动mysql"><a href="#启动mysql" class="headerlink" title="启动mysql"></a>启动mysql</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;通过以下命令启动mysql</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo service mysqld start</span><br></pre></td></tr></table></figure>
+
+<p>通过以下命令检查是否启动成功：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo service mysqld status</span><br></pre></td></tr></table></figure>
+
+<p>初始启动mysql，会自动为root产生一个临时的密码，该密码输出在日志文件，为了安全起见，需要对该密码进行修改。可以通过以下命令获取该密码</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo grep <span class="string">'temporary password'</span> /var/<span class="built_in">log</span>/mysqld.log</span><br></pre></td></tr></table></figure>
+
+<p>获取初始密码后，可以使用以下命令进行首次登陆。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mysql -uroot -p</span><br></pre></td></tr></table></figure>
+<p>执行该命令后，输入刚才获取的密码，要是一切正确，则可以登录到mysql服务器。登录成功后，可以通过以下语句进行密码修改：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ALTER USER <span class="string">'root'</span>@<span class="string">'localhost'</span> IDENTIFIED BY <span class="string">'MyNewPass4!'</span>;</span><br></pre></td></tr></table></figure>
+<p>MyNewPass4!是新登录密码。</p>
+<p>但是到此为止，所有的登录只能在本机登录。要想远程登录，则需要修改相关的登录权限。可以通过以下命令进行修改，以达到远程登录的目的：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mysql&gt; grant all privileges on *.* to root@<span class="string">"%"</span> identified by <span class="string">"密码"</span>;</span><br><span class="line">mysql&gt; flush privileges;</span><br></pre></td></tr></table></figure>
+<p>到此为止，mysql可以通过root和“密码”在远程机器上登录了。</p>
+]]></content>
+      <tags>
+        <tag>Mysql</tag>
+        <tag>基本操作</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Java集合框架（三）：ArrayList</title>
+    <url>/Java/Java-Collection-section31/</url>
+    <content><![CDATA[<h1 id="概要："><a href="#概要：" class="headerlink" title="概要："></a>概要：</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;ArrayList继承自AbstractList,并且实现了接口List,RandomAccess,Cloneable, java.io.Serializable。其内部通过一个对象数组Object[] elementData保存数据，该对象通过transient关键字修饰，访问权限是default。故此ArrayList内部数据无法序列化，并且其内容同个包内部都可以直接访问。通过私有变量size保存当前元素个数，即ArrayList大小。<br>&nbsp;&nbsp;&nbsp;&nbsp;此外还提供几个私有静态常量。如下：<br>  <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//初始化的ArrayList容量大小</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_CAPACITY = <span class="number">10</span>;</span><br><span class="line"><span class="comment">//创建ArrayList是，默认是一个空ArrayList而不是null，这个变量是为了优化ArrayList空实例时，避免产生过多的不必要的空数组。</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Object[] EMPTY_ELEMENTDATA = &#123;&#125;;</span><br><span class="line"><span class="comment">//确保无参构成函数创建的实例在添加第一个元素时，最小的容量是默认大小10。</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = &#123;&#125;;</span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">8683452581122892189L</span>;</span><br></pre></td></tr></table></figure></p>
+<p><strong>&nbsp;&nbsp;&nbsp;&nbsp;ArrayList内部是通过Object数组方式保存数据，size保存当前大小。但是存在默认构造函数，当调用该函数的时候，会产生一个默认大小的空ArrayList。这样会存在很多不必要的空数组，影响性能，ArrayList内部定义了几个静态常量空数组，用来应对空数组的共享，避免产生过多的空数组，从而提高性能。</strong></p>
+<p>ArrayList内部定义了四个内部类：<em>ArrayListSpliterator、Itr、Listltr、SubList</em></p>
+<h1 id="主要方法说明；"><a href="#主要方法说明；" class="headerlink" title="主要方法说明；"></a>主要方法说明；</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<h2 id="构造方法："><a href="#构造方法：" class="headerlink" title="构造方法："></a>构造方法：</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;ArrayList提供了3个构造方法，分别是无参数的默认构造方法，接收其他Collection对象的参数方法，以及指定ArrayList大小参数的方法。</p>
+ <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArrayList</span><span class="params">()</span>:</span></span><br></pre></td></tr></table></figure>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;默认构造方法，这个方法构造的ArrayList，是一个空的ArrayList，内部共享<code>DEFAULTCAPACITY_EMPTY_ELEMENTDATA</code>。<br></br></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArrayList</span><span class="params">(<span class="keyword">int</span> initialCapacity)</span>:</span></span><br></pre></td></tr></table></figure>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;这个构造器可以指定一个默认的容量参数，如果<code>initialCapacity</code>大于0，则再堆里面申请对应大小的Object数组；如果为0，则和默认构造方法一样，如果是小于零，则抛出异常<code>IllegalArgumentException</code>（非法参数异常)。<br></br></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArrayList</span><span class="params">(Collection&lt;? extends E&gt; c)</span>:</span></span><br></pre></td></tr></table></figure>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;这个构造器，可以把E子类类型的Collection对象赋值给ArrayList的方式创建一个新的ArrayList。新ArrayList大小和参数c大小一致，内存拷贝到一个新的内存空间。<br></br></br></p>
+<h2 id="添加元素方法："><a href="#添加元素方法：" class="headerlink" title="添加元素方法："></a>添加元素方法：</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;ArrayList提供了5个添加元素的方法。<br> <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">add</span><span class="params">(E e)</span>:</span></span><br></pre></td></tr></table></figure><br>&nbsp;&nbsp;&nbsp;&nbsp;往队列尾添加元素，其内部调用另外一个方法</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(E e, Object[] elementData, <span class="keyword">int</span> s)</span></span></span><br></pre></td></tr></table></figure>
+<p>  进行数据添加操作。<br></br><br> <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(E e, Object[] elementData, <span class="keyword">int</span> s)</span>:</span></span><br></pre></td></tr></table></figure><br>&nbsp;&nbsp;&nbsp;&nbsp;这是一个帮助函数，其存在目的是为了减少<code>add(E e)</code>字节码大小，从而可以被C1-编译器作为内联函数展开，从而循环调用add。<a href="https://www.imooc.com/article/247110" target="_blank" rel="noopener">外部参考</a>。<br></br><br> <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> index, E element)</span>:</span></span><br></pre></td></tr></table></figure><br>&nbsp;&nbsp;&nbsp;&nbsp;在特定的索引位置，插入特定的元素。如果存在对应的元素在该索引位置之后，则需要把这部分元素往后平移位置。<br></br><br> <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">addAll</span><span class="params">(Collection&lt;? extend E&gt; c)</span>:</span></span><br></pre></td></tr></table></figure><br>&nbsp;&nbsp;&nbsp;&nbsp;把c的Collection对象所有元素都添加ArrayList尾部，如果内存空间不足，则会自动扩容，再添加；操作成功，返回true；操作失败返回false，比如c长度为0。<br></br><br> <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">addAll</span><span class="params">(<span class="keyword">int</span> index, Collection&lt;? extend E&gt; c)</span>：</span></span><br></pre></td></tr></table></figure><br>&nbsp;&nbsp;&nbsp;&nbsp;在指定索引index，位置插入c的元素，索引右边的元素依次往后平移。次操作要是当前容量不够，则会自动扩容。操作成功返回true。操作失败返回false, 比如c长度为0.</p>
+<h2 id="删除元素："><a href="#删除元素：" class="headerlink" title="删除元素："></a>删除元素：</h2> <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">retainAll</span><span class="params">(Collection&lt;?&gt; c)</span></span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">batchRemove</span><span class="params">(Collection&lt;?&gt; c, <span class="keyword">boolean</span> complement, <span class="keyword">final</span> <span class="keyword">int</span> from, <span class="keyword">final</span> <span class="keyword">int</span> end)</span></span></span><br></pre></td></tr></table></figure>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;<code>retainAll</code>是<code>batchRemove</code>外壳，该函数是把c以外的其他元素都删除。<br></br></p>
+ <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">remove</span><span class="params">(<span class="keyword">int</span> index)</span>:</span></span><br></pre></td></tr></table></figure>
+</br>
+
+ <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">remove</span><span class="params">(Object o)</span>:</span></span><br></pre></td></tr></table></figure>
+</br>
+
+ <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">removeAll</span><span class="params">(Collection&lt;?&gt; c)</span>:</span></span><br></pre></td></tr></table></figure>
+</br>
+
+ <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">removeIf</span><span class="params">(Predicate&lt;? <span class="keyword">super</span> E&gt; filter)</span>:</span></span><br></pre></td></tr></table></figure>
+</br>
+
+ <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">removeIf</span><span class="params">(Predicate&lt;? <span class="keyword">super</span> E&gt; filter, <span class="keyword">int</span> i , <span class="keyword">final</span> <span class="keyword">int</span> end)</span>:</span></span><br></pre></td></tr></table></figure>
+</br>
+
+ <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">removeRange</span><span class="params">(<span class="keyword">int</span> from Index, <span class="keyword">int</span> toIndex)</span>:</span></span><br></pre></td></tr></table></figure>
+</br>
+
+ <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clear</span><span class="params">()</span>:</span></span><br></pre></td></tr></table></figure>
+</br>
+
+
+<h2 id="元素访问；"><a href="#元素访问；" class="headerlink" title="元素访问；"></a>元素访问；</h2><h2 id="元素遍历："><a href="#元素遍历：" class="headerlink" title="元素遍历："></a>元素遍历：</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;ArrayList内部是通过数组方式存储数据，其遍历方式可以直接通过数组下标的方式进行遍历也可以通过ArrayList提供的迭代器方式进行遍历。下面分别对两种方式进行描述：</p>
+<h3 id="2-4-1-1-下标方式："><a href="#2-4-1-1-下标方式：" class="headerlink" title="2.4.1.1 下标方式："></a>2.4.1.1 下标方式：</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestSCanArrayList1</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        List&lt;String&gt; al = <span class="keyword">new</span> ArrayList&lt;String&gt;();</span><br><span class="line">        <span class="comment">//添加三个元素</span></span><br><span class="line">        al.add(<span class="string">"one"</span>);</span><br><span class="line">        al.add(<span class="string">"two"</span>);</span><br><span class="line">        al.add(<span class="string">"three"</span>);</span><br><span class="line">        <span class="comment">//遍历</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; al.size(); ++i) &#123;</span><br><span class="line">            System.out.println(al.get(i));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;以上demo代码，首先调用add方法添加3个元素，然后通过size()方法获取数组大小，在for循环内部，通过get()方法，依次访问对应索引的元素个数，逐一遍历。</p>
+<h3 id="迭代器方式："><a href="#迭代器方式：" class="headerlink" title="迭代器方式："></a>迭代器方式：</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestSCanArrayList2</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        List&lt;String&gt; al = <span class="keyword">new</span> ArrayList&lt;String&gt;();</span><br><span class="line">        <span class="comment">//添加三个元素</span></span><br><span class="line">        al.add(<span class="string">"one"</span>);</span><br><span class="line">        al.add(<span class="string">"two"</span>);</span><br><span class="line">        al.add(<span class="string">"three"</span>);</span><br><span class="line">        <span class="comment">//遍历</span></span><br><span class="line">        <span class="comment">//定义一个迭代器</span></span><br><span class="line">        Iterator iter = al.iterator();</span><br><span class="line">        <span class="keyword">while</span>(iter.hasNext()) &#123;</span><br><span class="line">            System.out.println(iter.next());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//迭代器方式二：</span></span><br><span class="line">        <span class="keyword">for</span>(String item: al)&#123;</span><br><span class="line">          System.out.println(item);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;以上demo代码，使用迭代器的方式进行遍历。代码中第一次遍历是通过显示定义和调用迭代器方法；第二次是隐式调用，for-each循环，编译器自动调用迭代器进行元素遍历。</p>
+<h3 id="ArrayList内部迭代器类："><a href="#ArrayList内部迭代器类：" class="headerlink" title="ArrayList内部迭代器类："></a>ArrayList内部迭代器类：</h3><p>&nbsp;&nbsp;&nbsp;&nbsp;2.4.1.2节中迭代器方式进行遍历，是通过ArrayList内部定义的迭代器类，进行实现。下面直接通过代码分析的方式进行迭代器的功能分析：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Iterator&lt;E&gt; <span class="title">iterator</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Itr();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * An optimized version of AbstractList.Itr</span></span><br><span class="line"><span class="comment"> * AbstractList.Iter的优化版本。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">Itr</span> <span class="keyword">implements</span> <span class="title">Iterator</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> cursor;       <span class="comment">// 指向下一个元素的位置，每次next返回的元素如果是i,则cursor是i+1</span></span><br><span class="line">    <span class="keyword">int</span> lastRet = -<span class="number">1</span>; <span class="comment">// next返回的元素索引位置，-1表示空，</span></span><br><span class="line">    <span class="keyword">int</span> expectedModCount = modCount;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// prevent creating a synthetic constructor</span></span><br><span class="line">    <span class="comment">//显示定义无参数的构造方法，防止编译器自动生成构造方法</span></span><br><span class="line">    Itr() &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//判断是否还有下一个元素，cursor 从1开始，如果cursor不等于size表示还有元素</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasNext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> cursor != size;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//返回当前位置的下一个元素</span></span><br><span class="line">    <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> E <span class="title">next</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        checkForComodification();<span class="comment">//检查ArrayList是否产生变化，以防未定义的情况出现</span></span><br><span class="line">        <span class="keyword">int</span> i = cursor; <span class="comment">//把cursor赋值给i,cursor就是本次需要返回的元素，</span></span><br><span class="line">        <span class="keyword">if</span> (i &gt;= size)<span class="comment">//i已经是大于等于ArrayList大小，则表示没有元素了</span></span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> NoSuchElementException();</span><br><span class="line">        Object[] elementData = ArrayList.<span class="keyword">this</span>.elementData;<span class="comment">//把ArrayList对象数组赋值给临时数组变量elementData，其目的是想使用数组的length属性</span></span><br><span class="line">        <span class="keyword">if</span> (i &gt;= elementData.length)<span class="comment">//i大于等于elementData.length，表示数组已经变化了。</span></span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> ConcurrentModificationException();</span><br><span class="line">        cursor = i + <span class="number">1</span>;<span class="comment">//更新cursor，+1是指向下一个元素</span></span><br><span class="line">        <span class="keyword">return</span> (E) elementData[lastRet = i];<span class="comment">//先把i赋值给lastRet，在把elementData[lastRet]位置上的值返回，这里还进行了强制类型转换为E。</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//删除一个元素，具体删除的那个元素，依赖于迭代器的当前状态。</span></span><br><span class="line">    <span class="comment">//ArrayList非线程安全，所以只能单线程环境下使用。</span></span><br><span class="line">    <span class="comment">//迭代器是通过iterator()方法获取，该方法内部每次都是new 一个对象.</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">remove</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">//lastRet小于0，这个代码其实就是说明remove函数调用有前提条件，</span></span><br><span class="line">        <span class="comment">//它必须是调用next()以后才能调用。</span></span><br><span class="line">        <span class="keyword">if</span> (lastRet &lt; <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException();</span><br><span class="line">        checkForComodification();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            ArrayList.<span class="keyword">this</span>.remove(lastRet);<span class="comment">//删除上次next()返回的元素</span></span><br><span class="line">            cursor = lastRet;<span class="comment">//cursor原来是指向lastRet+1, cursor往前移1个位置，因为删除一个元素以后，该位置右边的所有元素都往前平移了。其索引都相应减1.</span></span><br><span class="line">            lastRet = -<span class="number">1</span>; <span class="comment">//lastRet赋值-1， 其目的是防止多次调用remove引起不确定行为</span></span><br><span class="line">            expectedModCount = modCount;<span class="comment">//手工更新ArrayList变更次数。</span></span><br><span class="line">            <span class="comment">/*</span></span><br><span class="line"><span class="comment">             * 只是修改lastRet为-1，这样防止了重复remove调用，</span></span><br><span class="line"><span class="comment">             * cursor往前移1个位置，是让迭代器在删除了元素后，依然能正确使用。</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">        &#125; <span class="keyword">catch</span> (IndexOutOfBoundsException ex) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> ConcurrentModificationException();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">forEachRemaining</span><span class="params">(Consumer&lt;? <span class="keyword">super</span> E&gt; action)</span> </span>&#123;</span><br><span class="line">        Objects.requireNonNull(action);</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> size = ArrayList.<span class="keyword">this</span>.size;</span><br><span class="line">        <span class="keyword">int</span> i = cursor;</span><br><span class="line">        <span class="keyword">if</span> (i &lt; size) &#123;</span><br><span class="line">            <span class="keyword">final</span> Object[] es = elementData;</span><br><span class="line">            <span class="keyword">if</span> (i &gt;= es.length)</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> ConcurrentModificationException();</span><br><span class="line">            <span class="keyword">for</span> (; i &lt; size &amp;&amp; modCount == expectedModCount; i++)</span><br><span class="line">                action.accept(elementAt(es, i));</span><br><span class="line">            <span class="comment">// update once at end to reduce heap write traffic</span></span><br><span class="line">            cursor = i;</span><br><span class="line">            lastRet = i - <span class="number">1</span>;</span><br><span class="line">            checkForComodification();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">checkForComodification</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (modCount != expectedModCount)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> ConcurrentModificationException();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;通过以上代码分析可以得知，迭代器内部其实就是通过索引的方式进行迭代数据，和先获取size然后通过get方法本质上不会差别太大，而且性能上还不如get方式。另外remove方法只能是next()方法返回的元素，而且只能连续调用1次。remove一个元素以后，会引起其他元素的位置平移。</p>
+]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>编程语言</tag>
+        <tag>集合框架</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Java集合框架（一）：概述</title>
+    <url>/Java/Java-Collection-section1/</url>
+    <content><![CDATA[<h1 id="一、集合论："><a href="#一、集合论：" class="headerlink" title="一、集合论："></a>一、集合论：</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;集合论源自现代数学，属于现代数据的基础理论。其奠基人康托尔在创建集合理论给出了许多公理和性质。它的概念和方法渗透到代数、拓扑和分析等许多数学分支以及物理学质点力学等一些自然科学，为这些科学提供了奠基的方法，改变了这些科学的面貌。计算机学科学作为一门现代科学因为和数学的渊源，很多概念也来自于自然数学，集合就是其中之一。</p>
+<h2 id="1-1-集合："><a href="#1-1-集合：" class="headerlink" title="1.1 集合："></a>1.1 集合：</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;集合很难下一个精确的定义，通常情况下，把具有相同性质的一类东西，汇聚成一个整体，可以称为集合。换句说，就是一组具备相同特殊性的东西集合在一起，称之为集合。用生活中的一些列子来说，全体中国人可以称之为集合，诸如此类，生活中很多东西就是可以称之为集合了。<br>&nbsp;&nbsp;&nbsp;&nbsp;通常情况下，数学上用于表示集合的方式有两种：列举法和性质描述法。所谓列举法是，就是把集合中所有的个体描述列举出来，比如集合A={1,2,3}。而性质描述法，就是通过一种规则或者是数学符号描述元素集，比如集合B={X|0&lt;X&lt;100且X属于整数}。<br>&nbsp;&nbsp;&nbsp;&nbsp;数学上的集合是从定义以后，就是固定不变的。对于计算机科学来说，集合是动态变化的，可以随着时间的、特定需求改变而产生变化。比如增大、缩小或者其他变化。计算机的集合表示方法，不同程序语言不同的方式，但是基本上都是通过特定的数据结构以及算法来描述，如列表、堆栈、队列、哈希表等等。</p>
+<h2 id="1-2-集合框架："><a href="#1-2-集合框架：" class="headerlink" title="1.2 集合框架："></a>1.2 集合框架：</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;集合框架，这是计算机在基于集合概念的基础上，规定了一种统计的标准的体系结构，用来表示和操作集合。基本上现代程序语言都或多或少提供了一些集合框架实现。现代程序设计语言中，最著名比如C++语言的STL库，JAVA的Collection Framework。这些框架基本上都包含了三个主要内容：对外的接口、内部具体实现和对集合进行操作的算法。<br>    接口：即表示集合的抽象数据类型。比如Java框架中的Queue, List等接口；并且提供了这些抽象数据类型的外部操作方法描述，通过这些方法可以对抽象数据类型进行的各种操作。<br>    实现：表示框架中接口的具体实现，实际上他们就是一些可复用的数据结构。<br>    算法：在一个具体的集合框架中实例化对象的一些计算和操作方法，如排序、查找等等。有的算法封装在具体实现内部，有的独立于外部。这不同的程序设计语言采取的方式不同。</p>
+<h2 id="1-3-集合框架的好处："><a href="#1-3-集合框架的好处：" class="headerlink" title="1.3 集合框架的好处："></a>1.3 集合框架的好处：</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;程序设计语言提供这些框架有什么好处呢？比如Java程序设计语言提供的JCF(Java Collection Framework)。他的好处是什么呢？</p>
+<ul>
+<li>首先：降低编程工作量。集合框架内部包含了一些可以复用的抽象数据结构实现，随着SDK一起发布，这些代码都经过了严格测试。在日常编程过中可以，放心的使用，无需重复造轮子，减少了业务编程中的开发工作量，和减少了出差的概率；</li>
+<li>其次：提高程序性能。框架代码一般初始行业顶尖专家之手，他们相对于普通程序员来说，对计算机底层基础预计语言的底层东西更加熟悉，故此很大概率上，能写出更加优胜性能的代码，此外，本身这些代码也经过严格性能测试。</li>
+<li>再次：通过标准的API，统一标准；降低程序员学习成本，从而降低学习维护业务代码的成本；</li>
+<li>最后：这些代码都是独立于具体业务场景下的代码模块。具体业务场景下使用，都是直接使用API，而不是浸入到框架内部，正所谓的面向接口编程。从而提高了代码的可重用性和互操作性。</li>
+</ul>
+<h1 id="二、Java集合框架概念-amp-设计目标："><a href="#二、Java集合框架概念-amp-设计目标：" class="headerlink" title="二、Java集合框架概念&amp;设计目标："></a>二、Java集合框架概念&amp;设计目标：</h1><h2 id="2-1-JCF框架概念："><a href="#2-1-JCF框架概念：" class="headerlink" title="2.1 JCF框架概念："></a>2.1 JCF框架概念：</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;对于Java语言来说，一个Collection(集合)是一个对象，其代表一群对象。比如经典的Vector就是Collection的一种。而集合框架，即JCF(Java Collection Framework）是一个代表和操作集合的统一架构，允许集合对象的操作独立于具体的实现。这一框架具有很多优点，比如提高软件的复用性，提高性能，降低代码量，减少学习API的时间等等。<br>&nbsp;&nbsp;&nbsp;&nbsp;整个框架包含了代表不同类型集合的接口；不同应用目的的接口实现类，如为了方便扩展集合框架而实现的抽象类，为了向前兼容而实现的Vector和HashTable类，为了并发场景下的实现类等等；和一些集合上执行操作的算法封装，如给一个列表排序等。</p>
+<h2 id="2-2-JCF设计目标"><a href="#2-2-JCF设计目标" class="headerlink" title="2.2 JCF设计目标:"></a>2.2 JCF设计目标:</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;JCF作为一个集合框架，其首要目的是提供一个精简的API集。特别代表各种集合的接口，我们通过语言对”接口”这一名词的语义定义可知，JCF是更加偏重概念性的理念。通过接口定义了框架支持的功能，把功能和具体实现分开。从而新的功能扩展与现有的Java程序看起来并无不同；而且是扩展现有设施，而非取而代之。为了使得核心接口数量尽量少，它们并不捕捉一些细微的差别，而是把这些明确的要求变为可选项，允许具体的实现类自行决定是否支持某项特性。（通过异常： UnsupportedOperationException抛出来表示不支持）。最后至关重要的一点，所有合理的集合代表都可以顺畅的进行交互操作。</p>
+<h1 id="三、Java集合框架发展历程："><a href="#三、Java集合框架发展历程：" class="headerlink" title="三、Java集合框架发展历程："></a>三、Java集合框架发展历程：</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;Java自1995年出现以来到今天已经走过20多个年头，从当初的JAVA1.0版本发展到了如今的JAVA1.13。但是其实集合框架并不是一开始就有的，至少在JAVA1.0的时候并没有完整的集合框架。彼时只有一些简单的可以自扩展的容器类，比如：Vector，HashTable等。不仅简单，而且还存在不多不少的缺陷。比如没有对容器进行排序的工具，要想得到排序，需要自行实现。直到JAVA1.2(Java1.2以后版本统称Java2)，重新设计容器类库，此时才可以说是一种真正意义上的集合框架实现。Java2中设计的集合框架提供了一套设计优良的接口和类，使得操作成批的数据或者对象极为方便。设计了一系列我们熟知的抽象数据类型，如Map,Set等。并且利用了面向对象方式进行了封装，极大降低了编程负担。此外还可以利用面向对象的技术，在此基础上进行扩展，从而满足个性化需求。<br>    总的来说Java2的集合框架，主要有两类：Collection和Map。其中Collection演化出List和Set。以下两个图是目前集合框架中相关主要接口的UML图。</p>
+<p><img src="/images/Java-Collection-section1-Collection.jpeg" alt=""></p>
+<p><img src="/images/Java-Colleciton-section1-Map.jpeg" alt=""></p>
+<p><strong>参考资料</strong></p>
+<ol>
+<li><a href="https://baike.baidu.com/item/JAVA%E9%9B%86%E5%90%88%E6%A1%86%E6%9E%B6" target="_blank" rel="noopener" title="百度词条">百度百科</a></li>
+<li><a href="https://docs.oracle.com/javase/8/docs/technotes/guides/collections/overview.html" target="_blank" rel="noopener" title="Oracle Document">Oracle Colleciton Framework Overview</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>编程语言</tag>
+        <tag>集合框架</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Nginx支持多域名配置</title>
+    <url>/Nginx/Nginx-vhost/</url>
+    <content><![CDATA[<h1 id="一、概述："><a href="#一、概述：" class="headerlink" title="一、概述："></a>一、概述：</h1><p>&nbsp;&nbsp;&nbsp;&nbsp;众所周知，没个域名通过DNS解析后都会落在一个对应的服务器IP地址，在全球IPV4地址用尽的情况下。如果域名不断增加，这怎么办呢？或者说，我们手上只有一台服务器资源，一个公网IP地址，但是却有多个域名，这怎么办呢？有没办法把多个域名都指向到这个服务器地址、且每个域名对应的应用内容都不一样呢？答案是：可以的。<br>Nginx开源web服务器，就支持这种诉求，将多个域名绑定到一个共同的IP地址。下面具体描述下，基于nginx服务器，如何进行这一个诉求的操作。</p>
+<h1 id="二、具体操作方式："><a href="#二、具体操作方式：" class="headerlink" title="二、具体操作方式："></a>二、具体操作方式：</h1><h2 id="1，环境准备："><a href="#1，环境准备：" class="headerlink" title="1，环境准备："></a>1，环境准备：</h2><p>&nbsp;&nbsp;&nbsp;&nbsp;考虑到实验性环境，我们可以通过自己找一台linux服务器，在局域网内部进行测试验证，或者是通过本机。通过虚拟化软件搭建一台服务器，进行测试验证。</p>
+<p>本文章使用的测试如下：<br>Virtualbox搭建一个Centos7服务器环境，固定IP地址为192.168.56.101<br>nginx版本为:<br>        <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">built by gcc 4.8.5 20150623 (Red Hat 4.8.5-39) (GCC) </span><br><span class="line">		built with OpenSSL 1.0.2k-fips  26 Jan 2017</span><br><span class="line">		TLS SNI support enabled</span><br><span class="line">		configure arguments: --prefix=/usr/share/nginx --sbin-path=/usr/sbin/nginx --modules-path=/usr/lib64/nginx/modules --conf-path=/etc/nginx/nginx.conf --error-log-path=/var/<span class="built_in">log</span>/nginx/error.log --http-log-path=/var/<span class="built_in">log</span>/nginx/access.log --http-client-body-temp-path=/var/lib/nginx/tmp/client_body --http-proxy-temp-path=/var/lib/nginx/tmp/proxy --http-fastcgi-temp-path=/var/lib/nginx/tmp/fastcgi --http-uwsgi-temp-path=/var/lib/nginx/tmp/uwsgi --http-scgi-temp-path=/var/lib/nginx/tmp/scgi --pid-path=/run/nginx.pid --lock-path=/run/lock/subsys/nginx --user=nginx --group=nginx --with-file-aio --with-ipv6 --with-http_ssl_module --with-http_v2_module --with-http_realip_module --with-stream_ssl_preread_module --with-http_addition_module --with-http_xslt_module=dynamic --with-http_image_filter_module=dynamic --with-http_sub_module --with-http_dav_module --with-http_flv_module --with-http_mp4_module --with-http_gunzip_module --with-http_gzip_static_module --with-http_random_index_module --with-http_secure_link_module --with-http_degradation_module --with-http_slice_module --with-http_stub_status_module --with-http_perl_module=dynamic --with-http_auth_request_module --with-mail=dynamic --with-mail_ssl_module --with-pcre --with-pcre-jit --with-stream=dynamic --with-stream_ssl_module --with-google_perftools_module --with-debug --with-cc-opt=<span class="string">'-O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic'</span> --with-ld-opt=<span class="string">'-Wl,-z,relro -specs=/usr/lib/rpm/redhat/redhat-hardened-ld -Wl,-E'</span></span><br></pre></td></tr></table></figure><br>        关闭所有的Centos防火墙。</p>
+<h2 id="2，操作步骤："><a href="#2，操作步骤：" class="headerlink" title="2，操作步骤："></a>2，操作步骤：</h2><p>首先：安装nginx。<br>&nbsp;&nbsp;&nbsp;&nbsp;这里网上很多教程，就不多论述了，linux下安装比较简单，具体操作步骤可以参考<a href="http://nginx.org" target="_blank" rel="noopener">Nginx官网</a> 或者搜索引擎返回的结果中寻找。</p>
+<p>其次：修改配置文件。<br>&nbsp;&nbsp;&nbsp;&nbsp;Nginx有vhost的概念，这个功能就是支持一台服务器包含多个虚拟主机。每个vhost对应一个文件即可。<br>本实验使用的配置文件路径是</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">/etc/nginx/nginx.conf</span><br></pre></td></tr></table></figure>
+<p>在目录/etc/nginx下创建一个文件夹vhost用来保存各种虚拟主机的配置文件。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo mkdir -p /etc/nginx/vhost</span><br></pre></td></tr></table></figure>
+<p>然后进入vhost文件夹，分别创建两个vhost配置文件：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> /etc/nginx/vhost</span><br><span class="line">sudo touch example1.com.conf</span><br><span class="line">sudo touch example2.com.conf</span><br></pre></td></tr></table></figure>
+
+<p>利用分别输入以下内容到这两个配置文件中：</p>
+<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line">example1.<span class="keyword">com</span>.<span class="keyword">conf</span></span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line">		listen 80;		#监听端口</span><br><span class="line">				server_name     example1.com www.example1.com;#绑定的域名</span><br><span class="line"></span><br><span class="line">				access_log      /home/www-data/log/access_example1.log main;#日志路径</span><br><span class="line"></span><br><span class="line">				location /&#123;	#域名对应应用代码路径,首页内容等</span><br><span class="line">						root /home/www-data/example1.com;</span><br><span class="line">						index index.php index.html index.htm;</span><br><span class="line">				&#125;</span><br><span class="line"></span><br><span class="line">		error_page 500 502 503 504 /50x.html;	#错误页面的配置，这个可以直接使用公用的,如果内容都是一样的话</span><br><span class="line">				location /<span class="number">50</span><span class="keyword">x</span>.html &#123;</span><br><span class="line">				&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line">example2.<span class="keyword">com</span>.<span class="keyword">conf</span></span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line">		listen 80;</span><br><span class="line">		server_name     example2.com www.example2.com;	#这里不同的域名不同的内容</span><br><span class="line"></span><br><span class="line">				access_log      /home/www-data/log/access_example2.log main;</span><br><span class="line"></span><br><span class="line">		location /&#123;</span><br><span class="line">				root /home/www-data/example2.com;		#这里是内容不同</span><br><span class="line">						index index.php index.html index.htm;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		error_page 500 502 503 504 /50x.html;</span><br><span class="line">		location /<span class="number">50</span><span class="keyword">x</span>.html &#123;</span><br><span class="line">		&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>配置好这两个vhost的虚拟主机配置，然后再/etc/nginx/nginx.conf的http配置域内，通过include指令引入这些vhost配置。如下</p>
+<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line">http &#123;</span><br><span class="line">		log_format  main  <span class="string">'$remote_addr - $remote_user [$time_local] "$request" '</span></span><br><span class="line">				<span class="string">'$status $body_bytes_sent "$http_referer" '</span></span><br><span class="line">				'"$http_user_agent" "$http_x_forwarded_for"';</span><br><span class="line"></span><br><span class="line">		access_log  /home/www-data/log/access.log  main;</span><br><span class="line"></span><br><span class="line">		sendfile            on;</span><br><span class="line">		tcp_nopush          on;</span><br><span class="line">		tcp_nodelay         on;</span><br><span class="line">		keepalive_timeout   65;</span><br><span class="line">		types_hash_max_size 2048;</span><br><span class="line"></span><br><span class="line">		include             /etc/nginx/mime.types;</span><br><span class="line">		default_type        application/octet-stream;</span><br><span class="line"></span><br><span class="line"># Load modular configuration <span class="keyword">files</span> from the /etc/nginx/<span class="keyword">conf</span>.d directory.</span><br><span class="line"># See http://nginx.org/<span class="keyword">en</span>/docs/ngx_core_module.html#include</span><br><span class="line"># <span class="keyword">for</span> more information.</span><br><span class="line">		include /etc/nginx/conf.d/*.conf;</span><br><span class="line"></span><br><span class="line">								   server &#123;</span><br><span class="line">								   listen       80 default_server;</span><br><span class="line">								   listen       [::]:80 default_server;</span><br><span class="line">								   server_name  wordpress_server:192-168-56-102;</span><br><span class="line">								   root         /home/www-data/html;</span><br><span class="line">								   <span class="built_in">index</span>       <span class="built_in">index</span>.php <span class="built_in">index</span>.html</span><br><span class="line"># Load configuration <span class="keyword">files</span> <span class="keyword">for</span> the default server block.</span><br><span class="line">include /etc/nginx/default.d/*.conf;</span><br><span class="line"></span><br><span class="line">error_page 404 /404.html;</span><br><span class="line">location = /<span class="number">40</span><span class="keyword">x</span>.html &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">error_page 500 502 503 504 /50x.html;</span><br><span class="line">location = /<span class="number">50</span><span class="keyword">x</span>.html &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">#在这里引入刚才配置的虚拟文件。</span><br><span class="line">include /etc/nginx/vhosts/*; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>到此为止，多个域名绑定到一个机器IP已经配置完毕。下面我们来做一个简单的测试。    </p>
+<h1 id="三、测试验证"><a href="#三、测试验证" class="headerlink" title="三、测试验证"></a>三、测试验证</h1><p>由于是测试配置的准确性，所以我们直接在两个vhost的目录下创建简单的index.html文件。</p>
+<p>example1.com</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">"This Example1.com website."</span> &gt;&gt; /home/www-data/exmaple1.com/index.html</span><br></pre></td></tr></table></figure>
+
+<p>example2.com</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">"This Example2.com website."</span> &gt;&gt; /home/www-data/example2.com/index.html</span><br></pre></td></tr></table></figure>
+
+<p>配置完毕，重启nginx</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo nginx reload</span><br></pre></td></tr></table></figure>
+
+<p>到此，针对nginx的配置已经完成了。</p>
+<p>不过还缺少一个很重要的步骤，就是本地域名的绑定。因为我们的域名都是随机定义的测试域名，需要直接在hosts文件进行域名的绑定。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo vim /etc/hosts</span><br></pre></td></tr></table></figure>
+
+<p>输入以下内容：</p>
+<pre><code class="vim">
+<span class="number">192.168</span>.<span class="number">56.101</span> example1.<span class="keyword">com</span> www.example1.<span class="keyword">com</span> example2.<span class="keyword">com</span> www.example2.<span class="keyword">com</span>
+</code></pre>
+<p>打开浏览器，分别输入<a href="http://www.example1.com和http://www.exmaple2.com。" target="_blank" rel="noopener">http://www.example1.com和http://www.exmaple2.com。</a><br>要是配置都没有问题的话，会分别在输入example1.com后看到输出是：This Example1.com website。输入example2.com后看到This Example2.com website。</p>
+]]></content>
+      <categories>
+        <category>Nginx</category>
+      </categories>
+      <tags>
+        <tag>Nginx</tag>
+        <tag>运维</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Java装箱和拆箱</title>
+    <url>/Java/Java%E8%A3%85%E7%AE%B1%E5%92%8C%E6%8B%86%E7%AE%B1/</url>
+    <content><![CDATA[<h1 id="一、包装类："><a href="#一、包装类：" class="headerlink" title="一、包装类："></a>一、包装类：</h1><p>  Java是一种面向对象语言，所有的内容都是对象，即使是Application入口main函数，也是需要封装在一个类内部。但是尽管如此java语言内置还是提供了8种基本的数据类型，不过这8种基本类型，不属于类。因此在很场景下无法直接使用。比如集合类以及泛型编程等。故此JDK标准库，针对这8种基本类型，提供了对应的封装类型。<br>  如图：</p>
+<table>
+<thead>
+<tr>
+<th>基本数据类型</th>
+<th>中文名称</th>
+<th>长度（字节）</th>
+<th>取值范围</th>
+<th>包装器类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>boolean</td>
+<td>布尔类型</td>
+<td>未定</td>
+<td>true/false</td>
+<td>Boolean</td>
+</tr>
+<tr>
+<td>char</td>
+<td>字符类型</td>
+<td>2</td>
+<td>描述UTF-16编码中的一个代码单元</td>
+<td>Character</td>
+</tr>
+<tr>
+<td>byte</td>
+<td>字节类型</td>
+<td>1</td>
+<td>-128~127</td>
+<td>Byte</td>
+</tr>
+<tr>
+<td>short</td>
+<td>数值类型</td>
+<td>2</td>
+<td>-32768~32768</td>
+<td>Short</td>
+</tr>
+<tr>
+<td>int</td>
+<td>数值类型</td>
+<td>4</td>
+<td>-2147483648~<br>2147483647<br>(超过20亿)</td>
+<td>Integer</td>
+</tr>
+<tr>
+<td>long</td>
+<td>数值类型</td>
+<td>8</td>
+<td>-92233720368<br>54775808~<br>922337203<br>6854775807</td>
+<td>Long</td>
+</tr>
+<tr>
+<td>float</td>
+<td>数值类型</td>
+<td>1</td>
+<td>大约+/-3.402823<br>47E+38f<br>(有效位数为6~7位</td>
+<td>Float</td>
+</tr>
+<tr>
+<td>double</td>
+<td>数值类型</td>
+<td>1</td>
+<td>大约+/-1.7976931348<br>6231570E+308<br>(有效位数15位）</td>
+<td>Double</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p>注 char类型中描述的代码单元和代码点，单独文章分析 *</p>
+<p>相关包装类型的UML图如下：<br><img src="/images/Java-boxing01.jpeg" alt=""></p>
+</li>
+</ul>
+<p>  由图可见，8种基本类型，除了Character和Boolean外，其他的数值类型，都继承自抽象类Number。<br>  并且他们都实现了java.io.Serivalizable和java.lang.Compare接口。这两个接口提供了序列化以及比较功能。</p>
+<p>  这里需要关注Number抽象类的几个方法：<br>  <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">intValue</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">long</span> <span class="title">longValue</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">float</span> <span class="title">floatValue</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">double</span> <span class="title">doubleValue</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">byte</span> <span class="title">doubleValue</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">short</span> <span class="title">shortValue</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure><br>  和包装类各自实现的方法：<br>  <figure class="highlight java"><table><tr><td class="code"><pre><span class="line">valueOf</span><br></pre></td></tr></table></figure><br>  这些方法会应用在接下来小节阐述的装箱和拆箱中。</p>
+<h1 id="二、装箱和拆箱："><a href="#二、装箱和拆箱：" class="headerlink" title="二、装箱和拆箱："></a>二、装箱和拆箱：</h1><p>  包装类的存在是为了弥补基本类型的非对象属性，使得在面向对象的场景中，基本类型也能通过包装以后能使用。比如集合类和泛型编程场景下，基本类型是无法直接使用的，必须转换为对象；但是Java并没有提供运算符重载，包装类不支持数学运算，因此在需要基本类型的场景下，需要把包装类包含的基本类型值，拆解出来。这过程就是“装箱”和“拆箱”。</p>
+<blockquote>
+<p>装箱：就是把基本类型封装到其对应的类对象类型中；<br>拆箱：就是把类对象类型拆解称为基本类型。</p>
+</blockquote>
+<p>  装箱和拆箱是分别通过对应的类对象方法进行操作。在JDK1.5之前，这些操作需要手工完成，比如把整数1封装给Integer对象：Integer I = new Integer(1);而拆箱则需要调用方法：int i = Integer.valueOf(I)。而在JDK1.5之后，这一过程自动由编译器完成，这个过程叫做 “自动装箱”和 “自动拆箱”。装箱的时候可以直接:Integer I = 1; 编译器会自动调用方法构造一个Integer对象，并且初始化为1；拆箱的时候可以直接：int i = I; 编译器自动调用Inteter.intValue()把对象转换为基本类型。比如以下代码：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span> <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestBoxAndUnBoxing01</span> </span>&#123;</span><br><span class="line"><span class="number">2</span>     <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"><span class="number">3</span>         Integer I = <span class="number">1</span>;</span><br><span class="line"><span class="number">4</span>         <span class="keyword">int</span> i = I;</span><br><span class="line"><span class="number">5</span>         <span class="keyword">int</span> j = I + <span class="number">2</span>;</span><br><span class="line"><span class="number">6</span>         Integer J = j;</span><br><span class="line"><span class="number">7</span></span><br><span class="line"><span class="number">8</span>         System.out.println(i);</span><br><span class="line"><span class="number">9</span>         System.out.println(I);</span><br><span class="line"><span class="number">10</span>        System.out.println(j);</span><br><span class="line"><span class="number">11</span>        System.out.println(J);</span><br><span class="line"><span class="number">12</span>     &#125;</span><br><span class="line"><span class="number">13</span> &#125;</span><br></pre></td></tr></table></figure>
+<p>编译后通过</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">javap -c TestBoxAndUnBoxing01</span><br></pre></td></tr></table></figure>
+<p>可以看到以下内容：</p>
+<p><img src="/images/Java-boxing02.jpeg" alt=""></p>
+<p>通过图片可以看出，自动装箱是通过调用Integer.valueOf方法完成，在以上代码存在两次需要进行装箱的操作，分别是第3行赋值、第6行赋值；自动拆箱则是通过Integer.intValue()方法完成，以上代码存在2次需要拆箱的，分别是第4行赋值和第5行的加法运算，对于第5行的加法运算，先是进行拆箱，然后执行数学运算，最后把结果赋值给变量j。</p>
+<h1 id="三、装箱缓存："><a href="#三、装箱缓存：" class="headerlink" title="三、装箱缓存："></a>三、装箱缓存：</h1><p>  通过以上类图我们还可以看到Character、Long、Integer、Short、Byte五个类型都分别有一个内部静态类***Cache。那么这些Cache是用来做什么呢？<br>  通过阅读分析JDK源码，发现这些Cache类对于-128~127之间的基本类型，在各自包装类内部都是通过初始化一个对应的对象数组，然后初始化为-128~127之间的值。比如对于Integer类，new一个256个元素的Integer数组，然后分别初始化为-128~127。同样对于Long就new一个256个元素的Long数组，分别初始化为-128~127。接着在进行自动装箱的过程中，判断对应的数值大小，当对应的数值大小介于-128~127之间，则直接使用该缓存中已经建立好的对象，只有超出该范围，才重新new一个对象。</p>
+<p>  这样做的目的其实就是为了提高效率。</p>
+<p>  我们不妨看看以下代码：<br>  <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestBoxingCache</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">    Integer i = -<span class="number">128</span>;</span><br><span class="line">    Integer j = -<span class="number">128</span>;</span><br><span class="line">    Integer k = -<span class="number">129</span>;</span><br><span class="line">    Integer l = -<span class="number">129</span>;</span><br><span class="line">    Integer m = <span class="number">127</span>;</span><br><span class="line">    Integer n = <span class="number">127</span>;</span><br><span class="line">    Integer o = <span class="number">128</span>;</span><br><span class="line">    Integer p = <span class="number">128</span>;</span><br><span class="line"></span><br><span class="line">    System.out.println(<span class="string">"i == j? :"</span> + (i == j));</span><br><span class="line">    System.out.println(<span class="string">"k == l? :"</span> + (k == l));</span><br><span class="line">    System.out.println(<span class="string">"m == n? :"</span> + (m == n));</span><br><span class="line">    System.out.println(<span class="string">"o == p? :"</span> + (o == p));</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>  <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">命令行执行：javac TestBoxingCache.java;java TestBoxingCache 后按到以下结果：</span><br><span class="line"></span><br><span class="line">i == j? :<span class="literal">true</span></span><br><span class="line">k == l? :<span class="literal">false</span></span><br><span class="line">m == n? :<span class="literal">true</span></span><br><span class="line">o == p? :<span class="literal">false</span></span><br></pre></td></tr></table></figure></p>
+<p>  我们都知道java语言中的类变量是指向一个特定的对象，而==运算符则是判断两个变量是否指向同一个对象。由此可见i和j；m和n分别是指向同一个对象；就是使用了包装类内部预先缓存的对象；而k和l、o和p则分别指向不同的对象，是装箱过程中，动态生成的。</p>
+<h1 id="四、总结："><a href="#四、总结：" class="headerlink" title="四、总结："></a>四、总结：</h1><p>  通过以上分析，我们大概可以简单总结。Java语言是一种面向对象编程语言，但是语言内置的基本类型不属于对象，语言通过标准库为期封装了包装类型(Wrapper)。在1.5以前，需要手工的进行装箱和拆箱；而在1.5以后，这一过程大部分情况下，编译器通过调用valueOf和xxxValue函数自动完成装箱和拆箱。而决定编译器执行装箱和拆箱的时机可以理解为：需要对象的时候就装箱和需要基本类型的时候就拆箱：比如把基本类型赋值给对象类型，函数调用参数传递等赋值场景下；使用集合类；使用泛型参数等等需要对象的场景下，装箱；需要基本类型的情况下，比如数学运算，逻辑运算等等，拆箱。<br>  此外，为了提高效率，在Character、Long、Integer、Short、Byte内部缓存了值为-128~127之间的对象，以便复用。</p>
+]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>编程语言</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hexo主题NexT笔记</title>
+    <url>/Hexo/Hexo%E4%B8%BB%E9%A2%98NexT%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<p>今天尝试使用hexo搭建了一个github的博客。考虑到快速上手，就没有去看官方教程，而是直接网上搜索了一个安装的帖子，参考着来一步步操作。<br>使用的hexo是最新版的4.2.0;主题是nexT。</p>
+<p>整个安装步骤，基本上没什么大问题，就是在主题的菜单上出现了点小情况：相关菜单，点击的时候总是无法跳转到对应的目标。比如：菜单首页，命名是指定了连接到<a href="http://www.hbean.net。配置下指定是home" target="_blank" rel="noopener">http://www.hbean.net。配置下指定是home</a>: /。可是就是在最终生成的连接上多了“%20”(HTML解码后是空格）。百思不得其解，最后经过替换主题，注意排查后发现是nexT主题下的配置:_config.yml文件中，对菜单的配置，在</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">home: / || home</span><br></pre></td></tr></table></figure>
+
+
+<p>多了个空格。把空格删除了就可以:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">home: /||home</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Hexo</category>
+      </categories>
+      <tags>
+        <tag>Hexo</tag>
+        <tag>主题</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/uncategorized/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+]]></content>
+  </entry>
+</search>
